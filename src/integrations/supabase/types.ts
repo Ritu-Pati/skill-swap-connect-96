@@ -14,7 +14,196 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          avg_rating: number | null
+          bio: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          location: string | null
+          total_reviews: number | null
+          updated_at: string | null
+          user_id: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          avg_rating?: number | null
+          bio?: string | null
+          created_at?: string | null
+          full_name: string
+          id?: string
+          location?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          avg_rating?: number | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          location?: string | null
+          total_reviews?: number | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          rating: number
+          reviewee_id: string
+          reviewer_id: string
+          skill_request_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating: number
+          reviewee_id: string
+          reviewer_id: string
+          skill_request_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          rating?: number
+          reviewee_id?: string
+          reviewer_id?: string
+          skill_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_skill_request_id_fkey"
+            columns: ["skill_request_id"]
+            isOneToOne: false
+            referencedRelation: "skill_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string | null
+          offered_skill_id: string | null
+          provider_id: string
+          requested_skill_id: string
+          requester_id: string
+          status: Database["public"]["Enums"]["request_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          offered_skill_id?: string | null
+          provider_id: string
+          requested_skill_id: string
+          requester_id: string
+          status?: Database["public"]["Enums"]["request_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          offered_skill_id?: string | null
+          provider_id?: string
+          requested_skill_id?: string
+          requester_id?: string
+          status?: Database["public"]["Enums"]["request_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_requests_offered_skill_id_fkey"
+            columns: ["offered_skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "skill_requests_requested_skill_id_fkey"
+            columns: ["requested_skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skills: {
+        Row: {
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["skill_category"]
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      user_skills: {
+        Row: {
+          created_at: string | null
+          id: string
+          proficiency_level: number | null
+          skill_id: string
+          skill_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          proficiency_level?: number | null
+          skill_id: string
+          skill_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          proficiency_level?: number | null
+          skill_id?: string
+          skill_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_skills_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +212,23 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      request_status:
+        | "pending"
+        | "accepted"
+        | "declined"
+        | "completed"
+        | "cancelled"
+      skill_category:
+        | "technology"
+        | "design"
+        | "business"
+        | "language"
+        | "music"
+        | "sports"
+        | "cooking"
+        | "crafts"
+        | "academic"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +355,26 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      request_status: [
+        "pending",
+        "accepted",
+        "declined",
+        "completed",
+        "cancelled",
+      ],
+      skill_category: [
+        "technology",
+        "design",
+        "business",
+        "language",
+        "music",
+        "sports",
+        "cooking",
+        "crafts",
+        "academic",
+        "other",
+      ],
+    },
   },
 } as const
